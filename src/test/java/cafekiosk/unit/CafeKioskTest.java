@@ -1,15 +1,15 @@
 package cafekiosk.unit;
 
 import cafekiosk.unit.beverage.Americano;
-import cafekiosk.unit.beverage.Latte;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 class CafeKioskTest {
 
     @Test
-    void add() {
+    void add_manual_test() {
         CafeKiosk cafeKiosk = new CafeKiosk();
         cafeKiosk.add(new Americano());
 
@@ -19,4 +19,37 @@ class CafeKioskTest {
 
     }
 
+    @Test
+    void add() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        cafeKiosk.add(new Americano());
+
+        assertThat(cafeKiosk.getBeverages()).hasSize(1);
+        assertThat(cafeKiosk.getBeverages().get(0).getName()).isEqualTo("아메리카노");
+    }
+
+    @Test
+    void remove() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+
+        cafeKiosk.add(americano);
+        assertThat(cafeKiosk.getBeverages()).hasSize(1);
+
+        cafeKiosk.remove(americano);
+        assertThat(cafeKiosk.getBeverages()).hasSize(0);
+    }
+
+    @Test
+    void clear() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+
+        cafeKiosk.add(new Americano());
+        cafeKiosk.add(new Americano());
+        cafeKiosk.add(new Americano());
+        assertThat(cafeKiosk.getBeverages()).hasSize(3);
+
+        cafeKiosk.clear();
+        assertThat(cafeKiosk.getBeverages()).hasSize(0);
+    }
 }
