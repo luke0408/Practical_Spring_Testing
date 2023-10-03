@@ -4,6 +4,7 @@ import cafekiosk.unit.beverage.Americano;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 class CafeKioskTest {
@@ -29,6 +30,28 @@ class CafeKioskTest {
     }
 
     @Test
+    void add_seval_beverages() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+
+        cafeKiosk.add(americano, 3);
+
+        assertThat(cafeKiosk.getBeverages().get(0).getName()).isEqualTo("아메리카노");
+        assertThat(cafeKiosk.getBeverages().get(1).getName()).isEqualTo("아메리카노");
+        assertThat(cafeKiosk.getBeverages().get(2).getName()).isEqualTo("아메리카노");
+    }
+
+    @Test
+    void add_zero_beverages() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+
+        assertThatThrownBy(() -> cafeKiosk.add(americano, 0))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("음료의 개수는 1개 이상이어야 합니다.");
+    }
+
+        @Test
     void remove() {
         CafeKiosk cafeKiosk = new CafeKiosk();
         Americano americano = new Americano();
