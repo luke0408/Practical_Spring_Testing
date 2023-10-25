@@ -1,6 +1,7 @@
 package cafekiosk.unit;
 
 import cafekiosk.unit.beverage.Americano;
+import cafekiosk.unit.beverage.Latte;
 import cafekiosk.unit.order.Order;
 import org.junit.jupiter.api.Test;
 
@@ -77,6 +78,20 @@ class CafeKioskTest {
 
         cafeKiosk.clear();
         assertThat(cafeKiosk.getBeverages()).hasSize(0);
+    }
+
+    @Test
+    void calculateTotalPrice() {
+        CafeKiosk cafeKiosk = new CafeKiosk();
+        Americano americano = new Americano();
+        Latte latte = new Latte();
+
+        cafeKiosk.add(americano);
+        cafeKiosk.add(latte);
+
+        int totalPrice = cafeKiosk.calculateTotalPrice();
+
+        assertThat(totalPrice).isEqualTo(8500);
     }
 
     @Test

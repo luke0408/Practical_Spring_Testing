@@ -67,4 +67,10 @@ public class CafeKiosk {
 
         return new Order(LocalDateTime.now(), beverages);
     }
+
+    public int calculateTotalPrice() {
+        return beverages.stream()
+                .mapToInt(Beverage::getPrice)
+                .sum();
+    }
 }
