@@ -2,13 +2,15 @@ package cafekiosk.spring.api.service.order;
 
 import cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
 import cafekiosk.spring.api.service.order.response.OrderResponse;
+import cafekiosk.spring.domain.order.OrderRepository;
+import cafekiosk.spring.domain.orderProduct.OrderProductRepository;
 import cafekiosk.spring.domain.product.Product;
 import cafekiosk.spring.domain.product.ProductRepository;
 import cafekiosk.spring.domain.product.ProductType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -28,7 +30,22 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderProductRepository orderProductRepository;
+
+    @Autowired
     private ProductRepository productRepository;
+
+
+    @AfterEach
+    void tearDown() {
+//        productRepository.deleteAll();
+        orderProductRepository.deleteAllInBatch();
+        productRepository.deleteAllInBatch();
+        orderRepository.deleteAllInBatch();
+    }
 
     @DisplayName("주문번호 리스트를 받아 주문을 생성한다.")
     @Test
@@ -59,6 +76,37 @@ class OrderServiceTest {
                         tuple("020", 3000),
                         tuple("021", 4000),
                         tuple("022", 5000)
+                );
+    }
+
+    @DisplayName("중복되는 상품번호 리스트로 주문을 생성할 수 있다.")
+    @Test
+    void createOrderWithDuplicateProductNumbers() {
+        // given
+        LocalDateTime registeredAt = LocalDateTime.now();
+
+        Product product1 = createProduct(HANDMADE, "020",  3000);
+        Product product2 = createProduct(BOTTLE, "021", 4000);
+        Product product3 = createProduct(BEVERAGE, "022", 5000);
+        productRepository.saveAll(List.of(product1, product2, product3));
+
+        OrderCreateRequest request = OrderCreateRequest.builder()
+                .productNumbers(List.of("020", "020"))
+                .build();
+
+        // when
+        OrderResponse orderResponse = orderService.createOrder(request, registeredAt);
+
+        // then
+        assertThat(orderResponse.getId()).isNotNull();
+        assertThat(orderResponse)
+                .extracting("registeredAt", "totalPrice")
+                .contains(registeredAt, 6000);
+        assertThat(orderResponse.getProducts()).hasSize(2)
+                .extracting("productNumber", "price")
+                .containsExactlyInAnyOrder(
+                        tuple("020", 3000),
+                        tuple("020", 3000)
                 );
     }
 
