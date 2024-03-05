@@ -1,6 +1,7 @@
 package cafekiosk.spring.api.service.product;
 
-import cafekiosk.spring.api.controller.product.dto.request.ProductCreatRequest;
+import cafekiosk.spring.api.controller.product.request.ProductCreatRequest;
+import cafekiosk.spring.api.service.product.request.ProductCreatServiceRequest;
 import cafekiosk.spring.api.service.product.response.ProductResponse;
 import cafekiosk.spring.domain.product.Product;
 import cafekiosk.spring.domain.product.ProductRepository;
@@ -24,7 +25,7 @@ public class ProductService {
     // 동시성 이슈가 발생할 수 있는 메서드
     // UUID를 사용하거나, DB의 sequence를 사용하거나, Redis를 사용하여 해결할 수 있다.
     @Transactional
-    public ProductResponse createProduct(ProductCreatRequest request) {
+    public ProductResponse createProduct(ProductCreatServiceRequest request) {
         String nextProductNumber = createNextProductNumber(request.getType());
         return ProductResponse.of(productRepository.save(request.toEntity(nextProductNumber)));
     }
@@ -34,7 +35,7 @@ public class ProductService {
         List<Product> products = productRepository.findAllBySellingStatusIn(ProductSellingStatus.forDisplay());
 
         return products.stream()
-                .map(product -> ProductResponse.of(product))
+                .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
 

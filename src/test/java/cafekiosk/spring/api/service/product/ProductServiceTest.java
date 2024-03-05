@@ -1,11 +1,11 @@
 package cafekiosk.spring.api.service.product;
 
-import cafekiosk.spring.api.controller.product.dto.request.ProductCreatRequest;
-import cafekiosk.spring.api.service.product.response.ProductResponse;
-import cafekiosk.spring.domain.product.Product;
-import cafekiosk.spring.domain.product.ProductRepository;
-import cafekiosk.spring.domain.product.ProductSellingStatus;
-import cafekiosk.spring.domain.product.ProductType;
+import static cafekiosk.spring.domain.product.ProductSellingStatus.*;
+import static cafekiosk.spring.domain.product.ProductType.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-
-import static cafekiosk.spring.domain.product.ProductSellingStatus.*;
-import static cafekiosk.spring.domain.product.ProductType.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import cafekiosk.spring.api.controller.product.request.ProductCreatRequest;
+import cafekiosk.spring.api.service.product.request.ProductCreatServiceRequest;
+import cafekiosk.spring.api.service.product.response.ProductResponse;
+import cafekiosk.spring.domain.product.Product;
+import cafekiosk.spring.domain.product.ProductRepository;
+import cafekiosk.spring.domain.product.ProductSellingStatus;
+import cafekiosk.spring.domain.product.ProductType;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -43,7 +45,7 @@ class ProductServiceTest {
         Product product3 = createProduct("201", BEVERAGE, STOP_SELLING, "test 음료", 5000);
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        ProductCreatRequest request = ProductCreatRequest.builder()
+        ProductCreatServiceRequest request = ProductCreatServiceRequest.builder()
                 .type(HANDMADE)
                 .sellingStatus(SELLING)
                 .name("test 수제 음료 2")
@@ -62,7 +64,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("새로운 타입의 상품을 등록한다. 상품번호는 {타입 prefix + 01} 이어야 한다.")
     void createProductWhenProductTypeIsEmpty() {
-        ProductCreatRequest request = ProductCreatRequest.builder()
+        ProductCreatServiceRequest request = ProductCreatServiceRequest.builder()
                 .type(HANDMADE)
                 .sellingStatus(SELLING)
                 .name("test 수제 음료 2")

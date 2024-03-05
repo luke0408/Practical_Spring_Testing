@@ -1,6 +1,15 @@
 package cafekiosk.spring.api.service.order;
 
-import cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import cafekiosk.spring.api.service.order.request.OrderCreateServiceRequest;
 import cafekiosk.spring.api.service.order.response.OrderResponse;
 import cafekiosk.spring.domain.order.Order;
 import cafekiosk.spring.domain.order.OrderRepository;
@@ -10,14 +19,6 @@ import cafekiosk.spring.domain.product.ProductType;
 import cafekiosk.spring.domain.stock.Stock;
 import cafekiosk.spring.domain.stock.StockRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class OrderService {
      * 재고 감소 -> 동시성 문제 가능성 있음
      * optimistic lock / pessimistic lock / ... -> 동시성 문제 해결 방식 다양함
      */
-    public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredAt) {
+    public OrderResponse createOrder(OrderCreateServiceRequest request, LocalDateTime registeredAt) {
         List<String> productNumbers = request.getProductNumbers();
         List<Product> products = findProductsBy(productNumbers);
 
