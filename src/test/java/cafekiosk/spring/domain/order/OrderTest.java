@@ -24,7 +24,7 @@ class OrderTest {
         );
 
         // when
-        Order order = Order.creat(products, LocalDateTime.now());
+        Order order = Order.create(products, LocalDateTime.now());
 
         // then
         assertThat(order.getTotalPrice()).isEqualTo(12000);
@@ -41,7 +41,7 @@ class OrderTest {
         );
 
         // when
-        Order order = Order.creat(products, LocalDateTime.now());
+        Order order = Order.create(products, LocalDateTime.now());
 
         // then
         assertThat(order.getOrderStatus()).isEqualByComparingTo(OrderStatus.INIT);
@@ -59,7 +59,7 @@ class OrderTest {
         );
 
         // when
-        Order order = Order.creat(products, registeredAt);
+        Order order = Order.create(products, registeredAt);
 
         // then
         assertThat(order.getRegisteredAt()).isEqualTo(registeredAt);
